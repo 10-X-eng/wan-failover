@@ -7,7 +7,6 @@ SECONDARY_IF="enp0s21f0u1"
 
 PRI_METRIC_ACTIVE=10     # lower  → preferred
 PRI_METRIC_STANDBY=400   # higher → ignored
-# whatever metric DHCP gave SECONDARY stays exactly as it is
 
 TEST_HOSTS=(1.1.1.1 9.9.9.9)
 PING_COUNT=4
@@ -38,14 +37,14 @@ replace_primary_metric() {
 
     [[ "$old" == "$new" ]] && { log "metric $PRIMARY_IF already $new"; return 0; }
 
-    ip route replace $base metric "$new"          # add/overwrite new metric
-    ip route del $base metric "$old" 2>/dev/null  # drop old metric (ignore if gone)
+    ip route replace $base metric "$new"
+    ip route del $base metric "$old" 2>/dev/null
 
     log "metric $PRIMARY_IF $old → $new"
 }
 
 ########################################################################
-# check_link IFACE  → good|degraded|failed   (pings logged)
+# check_link IFACE  → good|degraded|failed
 ########################################################################
 check_link(){
     local ifc=$1 lost=0 rtt_sum=0 probes=0
